@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>老母呷奔抽籤小幫手</title>
+
+  <!-- 字體 -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+
+  <!-- ========== Web / Desktop Icon ========== -->
+  <link rel="icon" type="image/png" href="icon-1.png">
+
+  <!-- ========== iOS 加入主畫面（Add to Home Screen）設定 ========== -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="老母呷奔">
+  
+  <!-- iOS 主畫面 App Icon（建議 180x180） -->
+  <link rel="apple-touch-icon" href="icon-2.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-2.png">
+
+  <!-- ========== Android / Chrome PWA 安裝設定 ========== -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- ========== CSS ========== -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- PapaParse CSV 解析庫 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+
+<body>
+
+  <header class="header">
+    <h1>老母呷奔抽籤小幫手</h1>
+    <div class="date" id="today-date"></div>
+  </header>
+
+  <main class="container">
+    <div class="grid">
+      <div class="card">
+        <h2>早餐</h2>
+        <button class="draw-btn" data-timeslot="breakfast">抽籤</button>
+        <div class="result" id="breakfast-result"></div>
+      </div>
+      <div class="card">
+        <h2>午餐</h2>
+        <button class="draw-btn" data-timeslot="lunch">抽籤</button>
+        <div class="result" id="lunch-result"></div>
+      </div>
+      <div class="card">
+        <h2>晚餐</h2>
+        <button class="draw-btn" data-timeslot="dinner">抽籤</button>
+        <div class="result" id="dinner-result"></div>
+      </div>
+      <div class="card">
+        <h2>點心</h2>
+        <button class="draw-btn" data-timeslot="snack">抽籤</button>
+        <div class="result" id="snack-result"></div>
+      </div>
+    </div>
+    <p id="load-status" style="margin-top:12px; font-weight:600;"></p>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
