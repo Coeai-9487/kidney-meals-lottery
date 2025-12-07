@@ -47,12 +47,72 @@ const today = new Date();
 const dateOptions = { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' };
 document.getElementById('today-date').textContent = today.toLocaleDateString('zh-TW', dateOptions);
 
+// ---------- 按鈕特效 ----------
+const clickSound = document.getElementById("clickSound");
+
+document.querySelectorAll(".fancy-btn").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    // 音效
+    clickSound.currentTime = 0;
+    clickSound.play();
+
+    // 水波紋
+    const rect = btn.getBoundingClientRect();
+    const ripple = document.createElement("span");
+    ripple.classList.add("ripple");
+    ripple.style.left = (e.clientX - rect.left) + "px";
+    ripple.style.top = (e.clientY - rect.top) + "px";
+    btn.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+
+    // 泡泡：隨機位置 → 放大 → 消失
+    const bubbleCount = 8 + Math.floor(Math.random() * 4); // 8~11 個泡泡
+    for (let i = 0; i < bubbleCount; i++) {
+      const bubble = document.createElement("span");
+      bubble.classList.add("bubble");
+
+      // 隨機初始大小
+      const size = 13 + Math.random() * 12; // 13~25 px
+      bubble.style.width = bubble.style.height = size + "px";
+      bubble.style.position = "absolute";
+
+      // 隨機位置 (距離按鈕邊緣 0~90%)
+      bubble.style.left = Math.random() * 90 + "%";
+      bubble.style.top = Math.random() * 90 + "%";
+
+      // 初始透明度和縮放
+      bubble.style.opacity = "0.8";
+      bubble.style.transform = "scale(0.3)";
+
+      // 設定動畫：放大 + 透明消失
+      const duration = 1000 + Math.random() * 600; // 1~1.6 秒
+      bubble.style.transition = `transform ${duration}ms ease-out, opacity ${duration}ms ease-out`;
+
+      btn.appendChild(bubble);
+
+      // 觸發動畫
+      requestAnimationFrame(() => {
+        bubble.style.transform = `scale(${1 + Math.random()})`; // 放大到 1~2 倍
+        bubble.style.opacity = "0";
+      });
+
+      // 移除泡泡
+      setTimeout(() => bubble.remove(), duration);
+    }
+
+    // 按鈕彈跳
+    btn.classList.remove('bounce');
+    void btn.offsetWidth; 
+    btn.classList.add('bounce');
+  });
+});
+
 // ---------- 抽籤按鈕事件 ----------
 document.querySelectorAll('.draw-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     // ⭐按鈕彈跳動畫
     btn.classList.remove('bounce');
-    void btn.offsetWidth; // 重新觸發動畫（關鍵）
+    void btn.offsetWidth; // 重新觸發動畫
     btn.classList.add('bounce');
 
     if (isDrawing) return; // 防止狂按
@@ -99,24 +159,18 @@ document.querySelectorAll('.draw-btn').forEach(btn => {
 
     // 偽延遲（做出抽籤感）
     setTimeout(() => {
-
-      // 停止動畫
       clearInterval(loadingInterval);
 
       // ---------- ⭐⭐ 兩階段抽籤：先抽店家，再抽品項 ----------
-
-      // ➊ group by store
       const grouped = {};
       availableMeals.forEach(item => {
         if (!grouped[item.store]) grouped[item.store] = [];
         grouped[item.store].push(item);
       });
 
-      // ➋ 先抽「店家」
       const storeNames = Object.keys(grouped);
       const chosenStore = storeNames[Math.floor(Math.random() * storeNames.length)];
 
-      // ➌ 再抽該店的「品項」
       const items = grouped[chosenStore];
       const finalMeal = items[Math.floor(Math.random() * items.length)];
 
@@ -128,8 +182,6 @@ document.querySelectorAll('.draw-btn').forEach(btn => {
         `金額：${finalMeal.price} 元`;
 
       isDrawing = false;
-
-    }, 1300); // 動畫結束時間
-
+    }, 1300); 
   });
 });

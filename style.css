@@ -97,3 +97,96 @@ body {
 @media (max-width: 880px) {
   .grid { grid-template-columns: 1fr; }
 }
+
+/* ---------------------------------------------------
+   升級版 fancy 按鈕特效
+--------------------------------------------------- */
+
+.fancy-btn {
+  position: relative;
+  padding: 16px 28px;
+  font-size: 22px;
+  color: #fff;
+  background: #ff7a7a;
+  border: 4px solid rgba(255, 255, 255, 0.3);   /* ❗柔白邊框 */
+  border-radius: 18px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  user-select: none;
+  font-weight: 700;
+
+  /* QQ 彈跳 */
+  transform: scale(1);
+}
+
+.fancy-btn:active {
+  transform: scale(0.88);
+}
+
+/* --- 外圈呼吸光環（無彩虹！純白柔光） --- */
+.fancy-btn::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
+  border-radius: inherit;
+  background: radial-gradient(
+      rgba(255, 255, 255, 0.55),
+      rgba(255, 255, 255, 0)
+  );
+  filter: blur(12px);
+  animation: breathing 2.8s ease-in-out infinite;
+  z-index: -1;
+}
+
+/* --- 泡泡粒子 --- */
+.fancy-btn::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* 呼吸光環動畫 */
+@keyframes breathing {
+  0% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.08); }
+  100% { opacity: 0.45; transform: scale(1); }
+}
+
+/* 泡泡上浮 */
+/* 泡泡（精簡版） */
+.bubble {
+  position: absolute;
+  bottom: 0;
+  width: 6px;
+  height: 6px;
+  background: white;
+  opacity: 0.6;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: bubble-float 2.2s ease-out forwards;
+  filter: blur(1px);
+}
+@keyframes bubble-float {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.7;
+  }
+  70% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(-80px) scale(1.8);
+    opacity: 0;
+  }
+}
