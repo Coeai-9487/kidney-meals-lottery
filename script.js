@@ -55,7 +55,7 @@ document.querySelectorAll(".fancy-btn").forEach(btn => {
     // 音效
     clickSound.currentTime = 0;
     clickSound.play();
-    clickSound.volume = 0.5;
+    clickSound.volume = 0.2;
 
     // 水波紋
     const rect = btn.getBoundingClientRect();
