@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>老母呷奔抽籤小幫手</title>
 
-  <!-- 字體 -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+  <!-- 字體：預連線 + Baloo 2 與 Noto Sans TC（繁體中文） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700;800&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
 
   <!-- ========== Web / Desktop Icon ========== -->
   <link rel="icon" type="image/png" href="icon-1.png">
@@ -35,28 +37,32 @@
   <header class="header">
     <h1>老母呷奔抽籤小幫手</h1>
     <div class="date" id="today-date"></div>
+    <div class="controls">
+      <label>動畫 <input id="toggle-anim" type="checkbox" checked></label>
+      <label>音效 <input id="toggle-sound" type="checkbox" checked></label>
+    </div>
   </header>
 
   <main class="container">
     <div class="grid">
       <div class="card">
         <h2>早餐</h2>
-        <button class="fancy-btn draw-btn" data-timeslot="breakfast">🎲 抽籤！</button>
+        <button class="fancy-btn draw-btn" data-timeslot="breakfast"><span class="icon">🎲</span><span class="label">抽籤！</span></button>
         <div class="result" id="breakfast-result"></div>
       </div>
       <div class="card">
         <h2>午餐</h2>
-        <button class="fancy-btn draw-btn" data-timeslot="lunch">🎲 抽籤！</button>
+        <button class="fancy-btn draw-btn" data-timeslot="lunch"><span class="icon">🎲</span><span class="label">抽籤！</span></button>
         <div class="result" id="lunch-result"></div>
       </div>
       <div class="card">
         <h2>晚餐</h2>
-        <button class="fancy-btn draw-btn" data-timeslot="dinner">🎲 抽籤！</button>
+        <button class="fancy-btn draw-btn" data-timeslot="dinner"><span class="icon">🎲</span><span class="label">抽籤！</span></button>
         <div class="result" id="dinner-result"></div>
       </div>
       <div class="card">
         <h2>點心</h2>
-        <button class="fancy-btn draw-btn" data-timeslot="snack">🎲 抽籤！</button>
+        <button class="fancy-btn draw-btn" data-timeslot="snack"><span class="icon">🎲</span><span class="label">抽籤！</span></button>
         <div class="result" id="snack-result"></div>
       </div>
     </div>

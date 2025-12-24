@@ -7,6 +7,8 @@ let isDrawing = false; // 防止連續抽籤
 const loadStatusEl = document.getElementById('load-status');
 loadStatusEl.textContent = '資料載入中...';
 
+// skeleton placeholders removed — no delayed loading indicator
+
 // ---------- 抓取 Google Sheet (PapaParse) ----------
 Papa.parse(SHEET_CSV_URL, {
   download: true,
@@ -34,11 +36,14 @@ Papa.parse(SHEET_CSV_URL, {
       ? `資料載入完成，共 ${totalCount} 筆餐點｜最後更新：${new Date().toLocaleString('zh-TW')}`
       : '資料已抓取，但目前沒有任何餐點選項';
 
+    // 資料載入完成
+
     console.log('整理後的資料', state);
   },
   error: function(err) {
     loadStatusEl.textContent = '讀取資料失敗';
     console.error(err);
+    // error handling
   }
 });
 
@@ -47,15 +52,28 @@ const today = new Date();
 const dateOptions = { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' };
 document.getElementById('today-date').textContent = today.toLocaleDateString('zh-TW', dateOptions);
 
-// ---------- 按鈕特效 ----------
+// ---------- 設定：動畫/音效開關（localStorage） ----------
 const clickSound = document.getElementById("clickSound");
+const defaultSettings = { anim: true, sound: true };
+let acSettings = defaultSettings;
+try {
+  const saved = localStorage.getItem('ac_settings');
+  if (saved) acSettings = Object.assign({}, defaultSettings, JSON.parse(saved));
+} catch (e) { acSettings = defaultSettings; }
 
+// 控制項綁定（若存在）
+const animToggle = document.getElementById('toggle-anim');
+const soundToggle = document.getElementById('toggle-sound');
+if (animToggle) { animToggle.checked = acSettings.anim; animToggle.addEventListener('change', () => { acSettings.anim = animToggle.checked; localStorage.setItem('ac_settings', JSON.stringify(acSettings)); }); }
+if (soundToggle) { soundToggle.checked = acSettings.sound; soundToggle.addEventListener('change', () => { acSettings.sound = soundToggle.checked; localStorage.setItem('ac_settings', JSON.stringify(acSettings)); }); }
+
+// 簡化 ripple + bounce（不要在這邊觸發葉子）
 document.querySelectorAll(".fancy-btn").forEach(btn => {
   btn.addEventListener("click", (e) => {
-    // 音效
-    clickSound.currentTime = 0;
-    clickSound.play();
-    clickSound.volume = 0.2;
+    // 音效（若開）
+    if (acSettings.sound) {
+      try { clickSound.currentTime = 0; clickSound.volume = 0.22; clickSound.play(); } catch (err){}
+    }
 
     // 水波紋
     const rect = btn.getBoundingClientRect();
@@ -66,45 +84,8 @@ document.querySelectorAll(".fancy-btn").forEach(btn => {
     btn.appendChild(ripple);
     setTimeout(() => ripple.remove(), 600);
 
-    // 泡泡：隨機位置 → 放大 → 消失
-    const bubbleCount = 8 + Math.floor(Math.random() * 4); // 8~11 個泡泡
-    for (let i = 0; i < bubbleCount; i++) {
-      const bubble = document.createElement("span");
-      bubble.classList.add("bubble");
-
-      // 隨機初始大小
-      const size = 13 + Math.random() * 12; // 13~25 px
-      bubble.style.width = bubble.style.height = size + "px";
-      bubble.style.position = "absolute";
-
-      // 隨機位置 (距離按鈕邊緣 0~90%)
-      bubble.style.left = Math.random() * 90 + "%";
-      bubble.style.top = Math.random() * 90 + "%";
-
-      // 初始透明度和縮放
-      bubble.style.opacity = "0.8";
-      bubble.style.transform = "scale(0.3)";
-
-      // 設定動畫：放大 + 透明消失
-      const duration = 1000 + Math.random() * 600; // 1~1.6 秒
-      bubble.style.transition = `transform ${duration}ms ease-out, opacity ${duration}ms ease-out`;
-
-      btn.appendChild(bubble);
-
-      // 觸發動畫
-      requestAnimationFrame(() => {
-        bubble.style.transform = `scale(${1 + Math.random()})`; // 放大到 1~2 倍
-        bubble.style.opacity = "0";
-      });
-
-      // 移除泡泡
-      setTimeout(() => bubble.remove(), duration);
-    }
-
-    // 按鈕彈跳
-    btn.classList.remove('bounce');
-    void btn.offsetWidth; 
-    btn.classList.add('bounce');
+    // 按鈕彈跳 (bounce)
+    btn.classList.remove('bounce'); void btn.offsetWidth; btn.classList.add('bounce');
   });
 });
 
@@ -182,7 +163,62 @@ document.querySelectorAll('.draw-btn').forEach(btn => {
         `餐點名稱：${finalMeal.name}<br>` +
         `金額：${finalMeal.price} 元`;
 
+      // 若開啟動畫：依結果稀有度產生葉子粒子
+      if (acSettings.anim) {
+        const rarity = getRarity(finalMeal);
+        const opts = {
+          count: rarity === 'epic' ? 20 : (rarity === 'rare' ? 12 : 8),
+          color: rarity === 'epic' ? '#FFD166' : (rarity === 'rare' ? '#7BC67B' : '#3E8E41')
+        };
+        createLeafBurst(btn, opts);
+      }
+
       isDrawing = false;
     }, 1300); 
   });
 });
+
+// ---------- helper: parse price -> rarity ----------
+function getRarity(item){
+  if (!item || !item.price) return 'normal';
+  const n = parseInt(item.price.replace(/[^0-9]/g, '')) || 0;
+  if (n >= 300) return 'epic';
+  if (n >= 150) return 'rare';
+  return 'normal';
+}
+
+// ---------- helper: 建立葉子爆散（可指定顏色與數量） ----------
+function createLeafBurst(btn, {count = 10, color = '#3E8E41'} = {}){
+  const rect = btn.getBoundingClientRect();
+  const centerX = rect.width/2; const centerY = rect.height/2;
+  for (let i=0;i<count;i++){
+    const leaf = document.createElement('span'); leaf.classList.add('leaf');
+    const w = 10 + Math.random()*18; const h = Math.round(w*0.9);
+    leaf.style.width = w+'px'; leaf.style.height = h+'px';
+    const jitterX = (Math.random()-0.5)*30; const jitterY = (Math.random()-0.5)*20;
+    leaf.style.left = (centerX + jitterX) + 'px'; leaf.style.top = (centerY + jitterY) + 'px';
+
+    const xDir = (Math.random() - 0.5) * 220;
+    const yDist = -80 - Math.random()*260;
+    const rot = (Math.random()>0.5?1:-1)*(120+Math.random()*700);
+    const dur = 700 + Math.random()*1200;
+    const scale = 0.7 + Math.random()*1.1;
+
+    leaf.style.setProperty('--x', xDir + 'px');
+    leaf.style.setProperty('--y', yDist + 'px');
+    leaf.style.setProperty('--rot', rot + 'deg');
+    leaf.style.setProperty('--scale', scale);
+    leaf.style.animationDuration = dur + 'ms';
+
+    // 動態設定 svg 顏色（inline svg data uri）
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="${encodeURIComponent(color)}" d="M21.7 4.3c-3.5 0-8 3.7-9.6 5.3-1.6 1.6-5.3 6.1-5.3 9.6 0 0 4.2-.6 8.4-4.8 4.2-4.2 4.8-8.4 4.8-8.4z"/></svg>`;
+    leaf.style.backgroundImage = `url('data:image/svg+xml;utf8,${svg}')`;
+
+    btn.appendChild(leaf);
+    setTimeout(()=>leaf.remove(), dur+120);
+  }
+}
+
+// Modal 已移除（功能停用）
+
+// skeleton placeholder support removed

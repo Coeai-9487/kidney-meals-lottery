@@ -1,192 +1,177 @@
-/* Reset & 基本樣式 */
+/* -----------------------------
+   Animal Crossing 風格樣式 (動物森友會)
+   - 調色板、圓潤邊角、木質/葉子小元素
+   - 可搭配 Google 字型（建議：Baloo 2 / Nunito）
+------------------------------ */
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-  font-family: 'Noto Sans TC', system-ui, sans-serif;
-  background: #fff7e6; 
-  color: #3b2f2f;
+:root{
+  --ac-cream: #FFF8E7;
+  --ac-mint: #E8F7EE;
+  --ac-leaf: #3E8E41;
+  --ac-wood: #C1864A;
+  --ac-accent: #FFB86B;
+  --ac-deep: #2F3B2F;
+  --ac-soft: #FFFFFF;
+  --radius: 14px;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  background: #ffe5b4;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  border-radius: 0 0 12px 12px;
+body{
+  /* 主要中文正文字型：Noto Sans TC（清晰、適合中文段落） */
+  font-family: 'Noto Sans TC', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* 奶油上方 → 薄荷下方，並柔化過渡，固定背景在視窗 */
+  background: linear-gradient(180deg, var(--ac-cream) 0%, #FFF9F2 28%, var(--ac-mint) 100%);
+  background-attachment: fixed;
+  background-size: cover;
+  color: var(--ac-deep);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
 }
 
-.header h1 { font-size: 20px; }
-.header #today-date { font-size: 14px; color:#a65e2e; }
-
-.container { max-width: 960px; margin: 20px auto; padding: 0 12px; }
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+/* 標題與按鈕使用較圓潤、遊戲感的 Baloo 2 */
+h1, h2, .fancy-btn, .draw-btn {
+  font-family: 'Baloo 2', 'Noto Sans TC', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.2px;
 }
 
-.card {
-  background: #fff3e0;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  transition: transform 0.2s ease;
+/* 卡片標題稍微更顯眼 */
+.card h2 { font-family: 'Baloo 2', 'Noto Sans TC'; font-weight:700; }
+
+/* Header - 木質橫幅 + 刺繡邊 */
+.header{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 18px 20px;
+  background: linear-gradient(180deg, #FCEFD9 0%, #F7E7CF 100%);
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 6px 14px rgba(46,40,28,0.08);
+  border-bottom: 4px solid rgba(0,0,0,0.04);
 }
-.card:hover { transform: translateY(-4px); }
+.header h1{ font-size:20px; letter-spacing:0.6px; }
+.header #today-date{ font-size:13px; color:var(--ac-wood); }
 
-.card h2 { margin-bottom: 12px; color: #a65e2e; }
+.controls{ display:flex; gap:10px; align-items:center; }
+.controls label{ font-size:13px; color:var(--ac-deep); background: rgba(255,255,255,0.6); padding:6px 8px; border-radius:10px; }
+.controls input{ margin-left:6px; transform:scale(1.05); }
 
-/* ======================== */
-/* 🔥 抽籤按鈕 — 更大、更明顯 */
-/* ======================== */
-/* ======================== */
-/* 🔥 抽籤按鈕 — 大顆＋彈跳效果 */
-/* ======================== */
-.draw-btn {
-  width: 100%;
-  padding: 18px 0;
-  margin-top: 14px;
-  font-size: 1.25rem;
-  font-weight: 700;
-  background-color: #ff9933;
-  color: white;
-  border: none;
-  border-radius: 14px;
-  cursor: pointer;
+.container{ max-width:960px; margin: 24px auto; padding: 0 16px; }
 
-  box-shadow: 0 4px 0 #cc7a29;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+.grid{ display:grid; grid-template-columns: repeat(2,1fr); gap:18px; }
+
+.card{
+  background: linear-gradient(180deg, var(--ac-soft), #FFF9F2);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: 0 10px 20px rgba(50,40,20,0.06);
+  text-align:center;
+  transition: transform .18s ease, box-shadow .18s ease;
+  position:relative;
+  border: 6px solid rgba(255,255,255,0.45);
 }
+.card:hover{ transform: translateY(-6px); box-shadow: 0 18px 30px rgba(50,40,20,0.08); }
+.card h2{ margin-bottom:12px; color:var(--ac-wood); font-size:18px; }
 
-/* 桌機 hover */
-.draw-btn:hover {
-  background-color: #ffaa4d;
-}
-
-/* 按下去時按鈕壓下去 */
-.draw-btn:active {
-  transform: translateY(3px) scale(0.97);
-  box-shadow: 0 1px 0 #cc7a29;
+/* 小葉子裝飾 */
+.card::before{
+  content: "🍃";
+  position:absolute; top:10px; right:12px; font-size:20px; opacity:0.95;
 }
 
-/* =============== */
-/* ⭐彈跳動畫 */
-/* =============== */
-.draw-btn.bounce {
-  animation: bounce-effect 0.35s ease-out;
+/* 抽籤按鈕 — 動物森友會風格：木製＋葉子徽章 */
+.draw-btn{
+  width:100%; display:inline-flex; align-items:center; justify-content:center; gap:12px;
+  padding:14px 20px; margin-top:14px; font-size:1.15rem; font-weight:800;
+  color:var(--ac-soft); background: linear-gradient(180deg, var(--ac-accent), #FF9A3E);
+  border:none; border-radius: 12px; cursor:pointer; position:relative;
+  box-shadow: 0 6px 0 rgba(125,74,36,0.55), inset 0 -6px 18px rgba(0,0,0,0.06);
+  transition: transform .12s ease, box-shadow .12s ease;
+  font-family: 'Baloo 2', 'Noto Sans TC', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height:1; height:56px;
 }
+.draw-btn:hover{ transform: translateY(-3px); }
+.draw-btn:active{ transform: translateY(3px) scale(.99); box-shadow: 0 3px 0 rgba(125,74,36,0.45); }
 
-@keyframes bounce-effect {
-  0%   { transform: scale(1); }
-  25%  { transform: scale(1.08); } /* 放大 */
-  50%  { transform: scale(0.95); } /* 回彈 */
-  100% { transform: scale(1); } /* 回到原本大小 */
-}
-
-.result {
-  margin-top: 12px;
-  font-weight: 600;
-  min-height: 36px;
-  color: #3b2f2f;
-}
-
-@media (max-width: 880px) {
-  .grid { grid-template-columns: 1fr; }
-}
-
-/* ---------------------------------------------------
-   升級版 fancy 按鈕特效
---------------------------------------------------- */
-
-.fancy-btn {
-  position: relative;
-  padding: 16px 28px;
-  font-size: 22px;
-  color: #fff;
-  background: #ff7a7a;
-  border: 4px solid rgba(255, 255, 255, 0.3);   /* ❗柔白邊框 */
-  border-radius: 18px;
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.3s ease;
-  overflow: hidden;
-  user-select: none;
-  font-weight: 700;
-
-  /* QQ 彈跳 */
-  transform: scale(1);
-}
-
-.fancy-btn:active {
-  transform: scale(0.88);
-}
-
-/* --- 外圈呼吸光環（無彩虹！純白柔光） --- */
-.fancy-btn::before {
+/* 在按鈕左側放葉子徽章（SVG data URI） */
+.draw-btn::before{
   content: "";
-  position: absolute;
-  top: -6px;
-  left: -6px;
-  right: -6px;
-  bottom: -6px;
-  border-radius: inherit;
-  background: radial-gradient(
-      rgba(255, 255, 255, 0.55),
-      rgba(255, 255, 255, 0)
-  );
-  filter: blur(12px);
-  animation: breathing 2.8s ease-in-out infinite;
-  z-index: -1;
+  width:34px; height:34px; display:inline-block; border-radius:8px;
+  margin-right:10px; position:absolute; left:12px; top:50%; transform:translateY(-50%);
+  background-color: rgba(255,255,255,0.9);
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%233E8E41" d="M20.7 4.3c-3.5 0-8 3.7-9.6 5.3-1.6 1.6-5.3 6.1-5.3 9.6 0 0 4.2-.6 8.4-4.8 4.2-4.2 4.8-8.4 4.8-8.4z"/></svg>');
+  background-size:60%; background-repeat:no-repeat; background-position:center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
 
-/* --- 泡泡粒子 --- */
-.fancy-btn::after {
-  content: "";
+.draw-btn .label{ display:inline-block; }
+
+/* skeleton 設計：在資料載入時顯示灰色骨架 */
+/* skeleton removed */
+
+/* Modal */
+/* Modal 已移除 */
+
+/* 按鈕木頭彈性（短暫的 scale + horizontal wobble） */
+.spring{ animation: wood-spring 360ms cubic-bezier(.2,.9,.3,1); }
+@keyframes wood-spring{
+  0%{ transform: translateY(0) scale(1); }
+  40%{ transform: translateY(-6px) scale(1.02) rotate(-1deg); }
+  70%{ transform: translateY(2px) scale(.99) rotate(1deg); }
+  100%{ transform: translateY(0) scale(1) rotate(0); }
+}
+
+.result{ margin-top:12px; font-weight:700; min-height:36px; color:var(--ac-deep); }
+
+@media (max-width:880px){ .grid{ grid-template-columns:1fr; } .header{padding:12px 14px;} }
+
+/* fancy-btn：圓潤木頭按鈕 */
+.fancy-btn{
+  position:relative; padding:14px 22px; font-size:18px; color:var(--ac-soft);
+  background: linear-gradient(180deg,#D98C4A,#C17332); border-radius:12px; border:3px solid rgba(255,255,255,0.35);
+  box-shadow: 0 8px 0 rgba(100,60,30,0.42); cursor:pointer; font-weight:800;
+}
+.fancy-btn:active{ transform: translateY(3px) scale(.98); box-shadow: 0 3px 0 rgba(100,60,30,0.3); }
+
+/* 小泡泡、彈跳效果精簡 */
+.fancy-btn::before{ content:""; position:absolute; inset:-6px; border-radius:inherit; background:radial-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0)); filter:blur(8px); z-index:-1; }
+
+/* optional tiny accent bubble */
+.bubble{ position:absolute; bottom:6px; right:10px; width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.8); opacity:0.9; }
+
+/* 小調整：讓按鈕內文字不被徽章蓋到 */
+.draw-btn, .fancy-btn{ overflow:visible; }
+
+/* 小提示文字 */
+.muted{ color: rgba(47,59,47,0.7); font-size:13px; }
+
+/* -----------------------------
+   葉子爆散粒子樣式
+------------------------------ */
+.leaf{
   position: absolute;
-  width: 8px;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
+  width: 20px; height: 18px;
   pointer-events: none;
-  opacity: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%233E8E41' d='M21.7 4.3c-3.5 0-8 3.7-9.6 5.3-1.6 1.6-5.3 6.1-5.3 9.6 0 0 4.2-.6 8.4-4.8 4.2-4.2 4.8-8.4 4.8-8.4z'/></svg>");
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform-origin: center;
+  opacity: 1;
+  will-change: transform, opacity;
+  animation-name: leaf-float;
+  animation-timing-function: cubic-bezier(.18,.9,.32,1);
+  animation-fill-mode: forwards;
+  /* 預設動畫長度，可被 inline style 覆蓋 */
+  animation-duration: 1200ms;
 }
 
-/* 呼吸光環動畫 */
-@keyframes breathing {
-  0% { opacity: 0.45; transform: scale(1); }
-  50% { opacity: 0.9; transform: scale(1.08); }
-  100% { opacity: 0.45; transform: scale(1); }
+@keyframes leaf-float{
+  0% { transform: translateY(0) rotate(0) scale(0.6); opacity:1; }
+  60% { opacity:0.95; }
+  100% { transform: translateY(var(--y,-140px)) translateX(var(--x,40px)) rotate(var(--rot,360deg)) scale(var(--scale,1)); opacity:0; }
 }
 
-/* 泡泡上浮 */
-/* 泡泡（精簡版） */
-.bubble {
-  position: absolute;
-  bottom: 0;
-  width: 6px;
-  height: 6px;
-  background: white;
-  opacity: 0.6;
-  border-radius: 50%;
-  pointer-events: none;
-  animation: bubble-float 2.2s ease-out forwards;
-  filter: blur(1px);
-}
-@keyframes bubble-float {
-  0% {
-    transform: translateY(0) scale(1);
-    opacity: 0.7;
-  }
-  70% {
-    opacity: 0.4;
-  }
-  100% {
-    transform: translateY(-80px) scale(1.8);
-    opacity: 0;
-  }
-}
+/* Finish */
+
+.hidden{ display:none !important; }
+
